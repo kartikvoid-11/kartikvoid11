@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f5f5f7">
+<meta name="mobile-web-app-capable" content="yes">
+<title>A-I-O SYSTEM</title>
+<style>
+:root{--bg:#f5f5f7;--card:#fff;--tx:#1d1d1f;--mu:#86868b;--ln:#e8e8ed;--bl:#0071e3;--gr:#34c759;--or:#ff9f0a;--pu:#af52de;--rd:#ff3b30}
+@media(prefers-color-scheme:dark){:root{--bg:#000;--card:#1c1c1e;--tx:#f5f5f7;--ln:#2c2c2e;--mu:#98989d}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--tx);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",Roboto,"Segoe UI",sans-serif}
+#app{max-width:480px;margin:0 auto;height:100%;display:flex;flex-direction:column;position:relative}
+main{flex:1;overflow-y:auto;padding:calc(env(safe-area-inset-top,0px) + 16px) 16px 24px}
+h1{font-size:30px;margin:4px 0 2px;letter-spacing:-.6px}h2{font-size:20px;margin:20px 0 10px;letter-spacing:-.3px}
+p{margin:0}.mu{color:var(--mu);font-size:14px}
+.card{background:var(--card);border-radius:20px;padding:16px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.row{display:flex;align-items:center;gap:10px}.sp{justify-content:space-between}
+.mod{display:flex;align-items:center;gap:14px;width:100%;border:0;text-align:left;color:var(--tx);cursor:pointer;font:inherit}
+.ico{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;font-size:24px;flex:none}
+.mod b{font-size:17px;display:block}
+input,select{width:100%;font:inherit;color:var(--tx);background:var(--bg);border:1px solid transparent;border-radius:12px;padding:13px 14px;outline:0}
+input:focus,select:focus{border-color:var(--bl)}
+.btn{border:0;background:var(--bl);color:#fff;font:inherit;font-weight:600;padding:13px 18px;border-radius:14px;cursor:pointer;width:100%}
+.btn.s{width:auto;padding:10px 16px}.btn.g{background:var(--bg);color:var(--bl)}.btn.r{background:transparent;color:var(--rd)}
+.btn:active{opacity:.7}
+.bar{height:8px;background:var(--ln);border-radius:8px;overflow:hidden}.bar i{display:block;height:100%;background:var(--bl);border-radius:8px;transition:width .4s}
+.item{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--ln)}.item:last-child{border:0}
+.chk{width:26px;height:26px;border-radius:50%;border:2px solid var(--ln);background:none;flex:none;cursor:pointer;color:#fff;font-size:14px;padding:0}
+.chk.on{background:var(--gr);border-color:var(--gr)}.done .t{text-decoration:line-through;color:var(--mu)}
+.t{flex:1}.x{border:0;background:none;color:var(--mu);font-size:20px;cursor:pointer}
+.chips{display:flex;gap:8px;overflow-x:auto;margin:10px 0;padding-bottom:4px}
+.chip{border:0;background:var(--card);color:var(--bl);padding:9px 14px;border-radius:20px;white-space:nowrap;font:inherit;font-size:14px;cursor:pointer}
+.tabs{display:flex;background:rgba(245,245,247,.85);background:color-mix(in srgb,var(--bg) 85%,transparent);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--ln);padding:6px 4px calc(env(safe-area-inset-bottom,0px) + 6px)}
+.tabs button{flex:1;border:0;background:none;color:var(--mu);font:inherit;font-size:11px;padding:4px;cursor:pointer}
+.tabs button span{display:block;font-size:22px}.tabs .on{color:var(--bl)}
+.msg{max-width:85%;padding:10px 14px;border-radius:18px;margin:6px 0;white-space:pre-wrap;line-height:1.4;font-size:15px}
+.me{background:var(--bl);color:#fff;margin-left:auto;border-bottom-right-radius:6px}.ai{background:var(--card);border-bottom-left-radius:6px}
+.big{font-size:44px;font-weight:700;letter-spacing:-1.5px}
+.badge{display:inline-block;padding:8px 12px;border-radius:14px;background:var(--bg);margin:4px 4px 0 0;font-size:14px}.badge.off{opacity:.35}
+.auth{max-width:480px;margin:0 auto;padding:12vh 24px 24px}
+.auth input{margin-bottom:10px}.err{color:var(--rd);font-size:14px;margin:6px 0;min-height:18px}
+.logo{font-size:34px;font-weight:800;letter-spacing:-1px}
+.tm{font-size:54px;font-weight:700;text-align:center;font-variant-numeric:tabular-nums;letter-spacing:-2px}
+.toast{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 14px);transform:translateX(-50%);background:var(--tx);color:var(--bg);padding:10px 18px;border-radius:20px;font-size:14px;font-weight:600;z-index:9;animation:tp .25s}
+@keyframes tp{from{transform:translate(-50%,-20px);opacity:0}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+const $=s=>document.querySelector(s),E=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const lk=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))||d}catch(e){return d}};
+const sv=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
+const hs=s=>{let h=5381;for(const c of s)h=(h*33)^c.charCodeAt(0);return String(h>>>0)};
+const day=(o=0)=>{const d=new Date();d.setDate(d.getDate()+o);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+const uid=()=>Math.random().toString(36).slice(2,9);
+const TPL={Push:[['Bench press',4,8],['Shoulder press',3,10],['Triceps dips',3,12]],Pull:[['Pull-ups',4,8],['Barbell row',4,10],['Biceps curl',3,12]],Legs:[['Squat',4,8],['Romanian deadlift',3,10],['Lunges',3,12]],'Full body':[['Squat',3,10],['Push-ups',3,15],['Dumbbell row',3,12],['Plank (sec)',3,45]]};
+let S=null,tab='home',chat=[{a:1,t:"Hi! I'm your AIO coach. Ask about your workout, study plan or calories."}],T=null,tl=1500,tr=false;
+
+function boot(){const e=lk('aio_session',null);if(e){const u=lk('aio_u_'+e,null);if(u){S=u;return render()}}auth()}
+function save(){sv('aio_u_'+S.email,S)}
+function auth(m='in',err=''){
+ $('#app').innerHTML=`<div class="auth"><div class="logo">A-I-O SYSTEM</div><p class="mu" style="margin:6px 0 28px">Gym, study and calories in one place.</p>
+ ${m=='up'?'<input id="n" placeholder="Your name" autocomplete="name">':''}
+ <input id="e" type="email" placeholder="Email" autocomplete="email"><input id="p" type="password" placeholder="Password (min 4 characters)" autocomplete="current-password">
+ <p class="err">${E(err)}</p><button class="btn" onclick="doAuth('${m}')">${m=='up'?'Create account':'Log in'}</button>
+ <button class="btn g" style="margin-top:10px" onclick="auth('${m=='up'?'in':'up'}')">${m=='up'?'I already have an account':'Create new account'}</button>
+ <p class="mu" style="margin-top:20px;text-align:center">Data stays on this device.</p></div>`}
+function doAuth(m){
+ const e=$('#e').value.trim().toLowerCase(),p=$('#p').value,n=m=='up'?$('#n').value.trim():'';
+ if(!/^\S+@\S+\.\S+$/.test(e))return auth(m,'Enter a valid email.');
+ if(p.length<4)return auth(m,'Password needs at least 4 characters.');
+ const ex=lk('aio_u_'+e,null);
+ if(m=='up'){if(ex)return auth('up','That email already has an account.');if(!n)return auth('up','Enter your name.');
+  S={email:e,name:n,pw:hs(p),xp:0,streak:0,last:'',gym:[],gl:[],study:[],sm:0,goal:2000,meals:[]};save()}
+ else{if(!ex||ex.pw!==hs(p))return auth('in','Wrong email or password.');S=ex}
+ sv('aio_session',e);tab='home';render()}
+function logout(){sv('aio_session','');S=null;stop();auth()}
+
+const lvl=()=>Math.floor(S.xp/100)+1;
+function toast(t){const d=document.createElement('div');d.className='toast';d.textContent=t;document.body.appendChild(d);setTimeout(()=>d.remove(),1800)}
+function gain(n,why){
+ const o=lvl();S.xp+=n;const t=day();
+ if(S.last!==t){S.streak=S.last===day(-1)?S.streak+1:1;S.last=t}
+ save();toast('+'+n+' XP · '+why);if(lvl()>o)setTimeout(()=>toast('Level '+lvl()+' reached!'),1900)}
+const todayMeals=()=>S.meals.filter(m=>m.d===day());
+const kcal=()=>todayMeals().reduce((a,m)=>a+m.k,0);
+
+function render(){
+ const v={home,gym,study,cal,ai,me}[tab]();
+ $('#app').innerHTML=`<main id="m">${v}</main><nav class="tabs">${[['home','🏠','Home'],['gym','🏋️','Gym'],['study','📚','Study'],['cal','🔥','Calories'],['ai','✨','AI Coach']].map(t=>`<button class="${tab==t[0]?'on':''}" onclick="go('${t[0]}')"><span>${t[1]}</span>${t[2]}</button>`).join('')}</nav>`;
+ const m=$('#m');if(tab=='ai')m.scrollTop=m.scrollHeight}
+function go(t){tab=t;render()}
+function head(t,s){return `<div class="row sp"><div><h1>${t}</h1><p class="mu">${s}</p></div><button class="ico" style="background:var(--card);border:0;font-size:20px;cursor:pointer" onclick="go('me')" aria-label="Profile">👤</button></div>`}
+
+function home(){
+ const p=S.xp%100,g=S.gym.length?Math.round(S.gym.filter(x=>x.done).length/S.gym.length*100):0,st=S.study.length?Math.round(S.study.filter(x=>x.done).length/S.study.length*100):0;
+ const h=new Date().getHours(),gr=h<12?'Good morning':h<18?'Good afternoon':'Good evening';
+ const M=(id,ic,bg,t,s)=>`<div class="card"><button class="mod" onclick="go('${id}')"><div class="ico" style="background:${bg}">${ic}</div><div style="flex:1"><b>${t}</b><span class="mu">${s}</span></div><span class="mu">›</span></button></div>`;
+ return head(gr+', '+E(S.name.split(' ')[0]),'Pick what you want to work on.')+
+ `<div class="card" style="margin-top:14px"><div class="row sp"><b>Level ${lvl()}</b><span class="mu">${S.xp} XP · 🔥 ${S.streak}-day streak</span></div><div class="bar" style="margin-top:10px"><i style="width:${p}%"></i></div><p class="mu" style="margin-top:6px">${100-p} XP to level ${lvl()+1}</p></div>`+
+ M('gym','🏋️','#e8f1ff','Gym workout planning',S.gym.length?g+'% of today’s workout done':'Build your plan')+
+ M('study','📚','#f3e8ff','Study planning',S.study.length?st+'% of tasks done':'Add your first task')+
+ M('cal','🔥','#fff1dd','Calorie goal',kcal()+' / '+S.goal+' kcal today')+
+ M('ai','✨','#e3f9e8','AI Coach','Get a personal suggestion')}
+
+function gym(){
+ const d=S.gym.filter(x=>x.done).length;
+ return head('Gym','Plan it, tick it, finish it.')+
+ `<div class="card" style="margin-top:14px"><b>Quick plan</b><div class="row" style="margin-top:10px"><select id="tp">${Object.keys(TPL).map(k=>`<option>${k}</option>`).join('')}</select><button class="btn s" onclick="tpl()">Add</button></div></div>
+ <div class="card"><b>Add exercise</b><input id="gn" placeholder="Exercise name" style="margin:10px 0"><div class="row"><input id="gs" type="number" inputmode="numeric" placeholder="Sets"><input id="gr" type="number" inputmode="numeric" placeholder="Reps"><button class="btn s" onclick="addG()">Add</button></div></div>
+ <div class="card"><div class="row sp"><b>Today’s workout</b><span class="mu">${d}/${S.gym.length}</span></div>
+ ${S.gym.length?S.gym.map(x=>`<div class="item ${x.done?'done':''}"><button class="chk ${x.done?'on':''}" onclick="togG('${x.id}')">${x.done?'✓':''}</button><div class="t">${E(x.n)}<p class="mu">${x.s} sets × ${x.r} reps</p></div><button class="x" onclick="delG('${x.id}')" aria-label="Delete">×</button></div>`).join(''):'<p class="mu" style="margin-top:8px">No exercises yet. Add a quick plan above.</p>'}
+ ${d?`<button class="btn" style="margin-top:12px" onclick="finG()">Finish workout</button>`:''}</div>
+ <p class="mu" style="text-align:center">Workouts finished: ${S.gl.length}</p>`}
+function tpl(){TPL[$('#tp').value].forEach(a=>S.gym.push({id:uid(),n:a[0],s:a[1],r:a[2],done:0}));save();render()}
+function addG(){const n=$('#gn').value.trim();if(!n)return toast('Enter an exercise name');S.gym.push({id:uid(),n,s:+$('#gs').value||3,r:+$('#gr').value||10,done:0});save();render()}
+function togG(i){const x=S.gym.find(a=>a.id==i);x.done=x.done?0:1;if(x.done)gain(5,'Exercise done');else save();render()}
+function delG(i){S.gym=S.gym.filter(a=>a.id!=i);save();render()}
+function finG(){S.gl.push(day());S.gym.forEach(x=>x.done=0);gain(50,'Workout finished');render()}
+
+function study(){
+ const d=S.study.filter(x=>x.done).length,mm=String(Math.floor(tl/60)).padStart(2,'0'),ss=String(tl%60).padStart(2,'0');
+ return head('Study','Focus, then check it off.')+
+ `<div class="card" style="margin-top:14px"><p class="mu" style="text-align:center">Focus timer · 25 minutes</p><div class="tm" id="tm">${mm}:${ss}</div>
+ <div class="row" style="margin-top:8px"><button class="btn" onclick="tg()">${tr?'Pause':'Start focus'}</button><button class="btn g s" onclick="rs()">Reset</button></div><p class="mu" style="text-align:center;margin-top:10px">Total focused: ${S.sm} min</p></div>
+ <div class="card"><b>Add task</b><input id="sn" placeholder="Subject or task" style="margin:10px 0"><div class="row"><input id="sd" type="number" inputmode="numeric" placeholder="Minutes"><button class="btn s" onclick="addS()">Add</button></div></div>
+ <div class="card"><div class="row sp"><b>Study plan</b><span class="mu">${d}/${S.study.length}</span></div>
+ ${S.study.length?S.study.map(x=>`<div class="item ${x.done?'done':''}"><button class="chk ${x.done?'on':''}" onclick="togS('${x.id}')">${x.done?'✓':''}</button><div class="t">${E(x.t)}<p class="mu">${x.m} min</p></div><button class="x" onclick="delS('${x.id}')" aria-label="Delete">×</button></div>`).join(''):'<p class="mu" style="margin-top:8px">No tasks yet. Add what you need to study.</p>'}</div>`}
+function addS(){const t=$('#sn').value.trim();if(!t)return toast('Enter a task');S.study.push({id:uid(),t,m:+$('#sd').value||30,done:0});save();render()}
+function togS(i){const x=S.study.find(a=>a.id==i);x.done=x.done?0:1;if(x.done)gain(15,'Task done');else save();render()}
+function delS(i){S.study=S.study.filter(a=>a.id!=i);save();render()}
+function tg(){if(tr)return stop(),render();tr=true;T=setInterval(()=>{tl--;const e=$('#tm');if(e)e.textContent=String(Math.floor(tl/60)).padStart(2,'0')+':'+String(tl%60).padStart(2,'0');if(tl<=0){stop();tl=1500;S.sm+=25;gain(30,'Focus session');render()}},1000);render()}
+function stop(){clearInterval(T);tr=false}
+function rs(){stop();tl=1500;render()}
+
+function cal(){
+ const c=kcal(),r=S.goal-c,pc=Math.min(100,Math.round(c/S.goal*100)),R=54,C=2*Math.PI*R,col=c>S.goal?'var(--rd)':'var(--or)';
+ return head('Calories','Enter what you eat. You set the goal.')+
+ `<div class="card" style="margin-top:14px;text-align:center"><svg width="140" height="140" viewBox="0 0 140 140"><circle cx="70" cy="70" r="${R}" fill="none" stroke="var(--ln)" stroke-width="12"/><circle cx="70" cy="70" r="${R}" fill="none" stroke="${col}" stroke-width="12" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C*(1-pc/100)}" transform="rotate(-90 70 70)"/><text x="70" y="76" text-anchor="middle" font-size="26" font-weight="700" fill="var(--tx)">${c}</text></svg>
+ <p class="mu">${r>=0?r+' kcal left today':(-r)+' kcal over your goal'}</p></div>
+ <div class="card"><b>Daily goal (kcal)</b><div class="row" style="margin-top:10px"><input id="kg" type="number" inputmode="numeric" value="${S.goal}"><button class="btn s" onclick="setGoal()">Save</button></div></div>
+ <div class="card"><b>Add meal</b><input id="mn" placeholder="Meal name" style="margin:10px 0"><div class="row"><input id="mk" type="number" inputmode="numeric" placeholder="Calories"><button class="btn s" onclick="addM()">Add</button></div></div>
+ <div class="card"><b>Today’s meals</b>${todayMeals().length?todayMeals().map(m=>`<div class="item"><div class="t">${E(m.n)}</div><b>${m.k}</b><button class="x" onclick="delM('${m.id}')" aria-label="Delete">×</button></div>`).join(''):'<p class="mu" style="margin-top:8px">No meals logged today.</p>'}</div>`}
+function setGoal(){const g=+$('#kg').value;if(g<500||g>10000)return toast('Enter a goal between 500 and 10000');S.goal=g;save();toast('Goal saved');render()}
+function addM(){const n=$('#mn').value.trim(),k=+$('#mk').value;if(!n||!(k>0))return toast('Enter a meal and calories');S.meals.push({id:uid(),n,k,d:day()});gain(5,'Meal logged');render()}
+function delM(i){S.meals=S.meals.filter(m=>m.id!=i);save();render()}
+
+function ai(){
+ return head('AI Coach','Advice based on your own data.')+
+ `<div class="chips">${['Plan my workout','What should I study?','How are my calories?','Motivate me'].map(q=>`<button class="chip" onclick="ask('${q}')">${q}</button>`).join('')}</div>
+ <div>${chat.map(m=>`<div class="msg ${m.a?'ai':'me'}">${E(m.t)}</div>`).join('')}</div>
+ <div class="row" style="margin-top:12px"><input id="q" placeholder="Ask your coach" onkeydown="if(event.key=='Enter')ask()"><button class="btn s" onclick="ask()">Send</button></div>`}
+function ask(q){q=q||$('#q').value.trim();if(!q)return;chat.push({t:q});chat.push({a:1,t:reply(q.toLowerCase())});render()}
+function reply(q){
+ const gp=S.gym.filter(x=>!x.done),sp=S.study.filter(x=>!x.done),c=kcal(),r=S.goal-c;
+ if(/gym|workout|train|exercise|plan/.test(q)){
+  if(!S.gym.length)return"You have no workout yet. A simple start: Push day (bench, shoulder press, dips) then Pull, then Legs. Open Gym and tap Add under Quick plan.";
+  return gp.length?`You have ${gp.length} exercise${gp.length>1?'s':''} left: ${gp.slice(0,3).map(x=>x.n).join(', ')}. Rest 60–90 seconds between sets and finish with a stretch.`:"Your workout is complete. Tap Finish workout to bank 50 XP, then rest and eat well."}
+ if(/study|learn|exam|focus/.test(q)){
+  if(!S.study.length)return"Add 2–3 tasks of 25–45 minutes each in Study, then use the focus timer. Short sessions beat long cramming.";
+  return sp.length?`Start with “${sp[0].t}” (${sp[0].m} min). Run one 25-minute focus session, take a 5-minute break, then move to the next task.`:"All tasks done. Add tomorrow’s tasks now so you can start fast."}
+ if(/cal|eat|food|meal|diet|kcal/.test(q)){
+  if(!c)return`You haven’t logged any meals today. Your goal is ${S.goal} kcal. Add your first meal in Calories.`;
+  return r>=0?`You’ve eaten ${c} kcal and have ${r} left. Aim for a protein-rich meal to fill it.`:`You’re ${-r} kcal over today’s goal. Keep tomorrow lighter or add a walk.`}
+ if(/motiv|tired|lazy|sad|help/.test(q))return`You’re on a ${S.streak}-day streak with ${S.xp} XP. One small action today keeps it alive. Tick one exercise or study task right now.`;
+ return"I can help with your workout, study plan and calories. Try one of the buttons above.";}
+
+function me(){
+ const B=[['🌱','First step',S.xp>=10],['🔥','3-day streak',S.streak>=3],['🏆','7-day streak',S.streak>=7],['💪','First workout',S.gl.length>=1],['🎓','60 focus min',S.sm>=60],['🥗','Calorie tracker',S.meals.length>=5],['⭐','Level 5',lvl()>=5]];
+ return `<div class="row sp"><h1>Profile</h1><button class="btn g s" onclick="go('home')">Done</button></div>
+ <div class="card"><b style="font-size:20px">${E(S.name)}</b><p class="mu">${E(S.email)}</p><div class="row" style="margin-top:14px"><div style="flex:1"><div class="big">${lvl()}</div><p class="mu">Level</p></div><div style="flex:1"><div class="big">${S.streak}</div><p class="mu">Day streak</p></div><div style="flex:1"><div class="big">${S.xp}</div><p class="mu">XP</p></div></div></div>
+ <div class="card"><b>Badges</b><div>${B.map(b=>`<span class="badge ${b[2]?'':'off'}">${b[0]} ${b[1]}</span>`).join('')}</div></div>
+ <div class="card"><p class="mu">Workouts finished: ${S.gl.length} · Focus minutes: ${S.sm} · Meals logged: ${S.meals.length}</p></div>
+ <button class="btn r" onclick="logout()">Log out</button>`}
+
+boot();
+</script>
+</body>
+</html>
